@@ -15,7 +15,7 @@
     height: 18px;
     line-height: 18px;
     color: rgba(0,0,0,0.4);
-    font-size: 8px;
+    font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.1em;
     z-index: 10;
@@ -31,6 +31,7 @@
     height: 100%;
     z-index: 20;
     background: transparent;
+    cursor: pointer;
   }
   #touch-hint {
     display: none;
@@ -39,9 +40,9 @@
     right: 8px;
     transform: none;
     color: rgba(0,0,0,0.4);
-    font-size: 8px;
+    font-size: 10px;
     font-weight: bold;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     pointer-events: none;
     z-index: 21;
     white-space: nowrap;
@@ -65,15 +66,16 @@
 
 <script>
   const pageName = window.location.pathname.split('/').filter(Boolean).pop();
+  const mv = document.querySelector('#mv');
+  const label = document.querySelector('#progress-label');
+  const overlay = document.querySelector('#touch-overlay');
+  const hint = document.querySelector('#touch-hint');
+
   customElements.whenDefined('model-viewer').then(() => {
     mv.setAttribute('src', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.glb');
     mv.setAttribute('alt', pageName + '_3D');
     mv.setAttribute('poster', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.png');
   });
-  const mv = document.querySelector('#mv');
-  const label = document.querySelector('#progress-label');
-  const overlay = document.querySelector('#touch-overlay');
-  const hint = document.querySelector('#touch-hint');
 
   const isMobile = () => window.matchMedia('(pointer: coarse)').matches;
 
@@ -81,7 +83,8 @@
 
   function enableOverlay() {
     overlay.style.display = 'block';
-    if (isMobile()) hint.style.display = 'block';
+    hint.style.display = 'block';
+    hint.textContent = isMobile() ? 'pinch to interact' : 'click to interact';
   }
 
   function disableOverlay() {
@@ -93,15 +96,19 @@
   function resetInactivityTimer() {
     clearTimeout(inactivityTimer);
     inactivityTimer = setTimeout(() => {
-      if (isMobile()) enableOverlay();
+      enableOverlay();
     }, 1500);
   }
 
   mv.addEventListener('load', () => {
     setTimeout(() => {
       label.style.display = 'none';
-      if (isMobile()) enableOverlay();
+      enableOverlay();
     }, 300);
+  });
+
+  overlay.addEventListener('click', () => {
+    if (!isMobile()) disableOverlay();
   });
 
   overlay.addEventListener('touchstart', (e) => {
@@ -122,17 +129,19 @@
 
   mv.addEventListener('touchstart', () => {
     mv.removeAttribute('auto-rotate');
+    clearTimeout(inactivityTimer);
   }, { passive: true });
 
   mv.addEventListener('touchmove', (e) => {
     if (e.touches.length === 1) e.stopPropagation();
   }, { passive: true });
 
-  mv.addEventListener('touchstart', () => {
-    clearTimeout(inactivityTimer);
-  }, { passive: true });
-
   mv.addEventListener('touchend', () => {
     resetInactivityTimer();
   }, { passive: true });
+
+  mv.addEventListener('mouseleave', () => {
+    enableOverlay();
+    clearTimeout(inactivityTimer);
+  });
 </script>
