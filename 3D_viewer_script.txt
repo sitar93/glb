@@ -64,7 +64,7 @@
 </div>
 
 <script>
-  const pageName = window.location.pathname.replace(/\//g, '');
+  const pageName = window.location.pathname.split('/').filter(Boolean).pop();
   customElements.whenDefined('model-viewer').then(() => {
     mv.setAttribute('src', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.glb');
     mv.setAttribute('alt', pageName + '_3D');
