@@ -1,0 +1,138 @@
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+<style>
+  #viewer-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 0px solid #ffffff;
+    background: #ffffff;
+  }
+  #progress-label {
+    position: absolute;
+    top: 3px;
+    left: 8px;
+    height: 18px;
+    line-height: 18px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #touch-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    background: transparent;
+  }
+  #touch-hint {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    right: 8px;
+    transform: none;
+    color: rgba(0,0,0,0.4);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    z-index: 21;
+    white-space: nowrap;
+  }
+</style>
+
+<div id="viewer-container">
+  <model-viewer
+    id="mv"
+    auto-rotate
+    auto-rotate-delay="0"
+    rotation-per-second="60deg"
+    camera-controls
+    disable-pan
+    style="width: 100%; height: 100%; --progress-bar-height: 18px; --progress-bar-color: #DD22CD;">
+  </model-viewer>
+  <div id="progress-label">loading 3D model 0%</div>
+  <div id="touch-overlay"></div>
+  <div id="touch-hint">pinch to interact</div>
+</div>
+
+<script>
+  const pageName = window.location.pathname.replace(/\//g, '');
+  customElements.whenDefined('model-viewer').then(() => {
+    mv.setAttribute('src', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.glb');
+    mv.setAttribute('alt', pageName + '_3D');
+    mv.setAttribute('poster', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.png');
+  });
+  const mv = document.querySelector('#mv');
+  const label = document.querySelector('#progress-label');
+  const overlay = document.querySelector('#touch-overlay');
+  const hint = document.querySelector('#touch-hint');
+
+  const isMobile = () => window.matchMedia('(pointer: coarse)').matches;
+
+  let inactivityTimer = null;
+
+  function enableOverlay() {
+    overlay.style.display = 'block';
+    if (isMobile()) hint.style.display = 'block';
+  }
+
+  function disableOverlay() {
+    overlay.style.display = 'none';
+    hint.style.display = 'none';
+    resetInactivityTimer();
+  }
+
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      if (isMobile()) enableOverlay();
+    }, 1500);
+  }
+
+  mv.addEventListener('load', () => {
+    setTimeout(() => {
+      label.style.display = 'none';
+      if (isMobile()) enableOverlay();
+    }, 300);
+  });
+
+  overlay.addEventListener('touchstart', (e) => {
+    if (e.touches.length >= 2) {
+      e.preventDefault();
+      disableOverlay();
+    }
+  }, { passive: false });
+
+  mv.addEventListener('progress', (e) => {
+    const p = Math.round(e.detail.totalProgress * 100);
+    label.textContent = 'loading 3D model ' + p + '%';
+  });
+
+  mv.addEventListener('click', () => {
+    mv.removeAttribute('auto-rotate');
+  });
+
+  mv.addEventListener('touchstart', () => {
+    mv.removeAttribute('auto-rotate');
+  }, { passive: true });
+
+  mv.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1) e.stopPropagation();
+  }, { passive: true });
+
+  mv.addEventListener('touchstart', () => {
+    clearTimeout(inactivityTimer);
+  }, { passive: true });
+
+  mv.addEventListener('touchend', () => {
+    resetInactivityTimer();
+  }, { passive: true });
+</script>
