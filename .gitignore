@@ -1,0 +1,15 @@
+# Windows system / Explorer metadata
+desktop.ini
+**/desktop.ini
+Thumbs.db
+**/Thumbs.db
+ehthumbs.db
+**/ehthumbs.db
+ehthumbs_vista.db
+**/ehthumbs_vista.db
+Desktop.ini
+**/Desktop.ini
+
+# macOS (se copi cartelle da Mac)
+.DS_Store
+**/.DS_Store
