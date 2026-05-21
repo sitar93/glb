@@ -1,3 +1,9 @@
+<!-- Required for GLBs compressed with meshopt (raum.app / GLB Optimizer) -->
+<script>
+  self.ModelViewerElement = self.ModelViewerElement || {};
+  self.ModelViewerElement.meshoptDecoderLocation =
+    'https://unpkg.com/meshoptimizer@0.20.0/meshopt_decoder.js';
+</script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
 <style>
@@ -21,6 +27,44 @@
     z-index: 10;
     white-space: nowrap;
     pointer-events: none;
+  }
+  #case-mode-wrap {
+    display: none;
+    position: absolute;
+    top: 3px;
+    right: 8px;
+    z-index: 22;
+    gap: 4px;
+    background: #ffffff;
+    padding: 3px 4px;
+    user-select: none;
+  }
+  #case-mode-wrap.visible {
+    display: inline-flex;
+  }
+  .case-mode-btn {
+    margin: 0;
+    padding: 2px 6px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    background: #ffffff;
+    color: rgba(0,0,0,0.45);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: lowercase;
+  }
+  .case-mode-btn:hover {
+    color: rgba(0,0,0,0.7);
+    border-color: rgba(0,0,0,0.35);
+  }
+  .case-mode-btn.active {
+    color: rgba(0,0,0,0.85);
+    border-color: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.04);
   }
   #touch-overlay {
     display: none;
@@ -66,57 +110,306 @@
     interaction-prompt-style="none"
     style="width: 100%; height: 100%; --progress-bar-height: 18px; --progress-bar-color: transparent;">
   </model-viewer>
+
   <div id="progress-label">loading 3D model 0%</div>
+
+  <div id="case-mode-wrap" role="group" aria-label="Case mode" aria-hidden="true">
+    <button type="button" class="case-mode-btn active" data-mode="standalone" aria-pressed="true">
+      standalone
+    </button>
+
+    <button type="button" class="case-mode-btn" data-mode="eurorack" aria-pressed="false">
+      eurorack
+    </button>
+  </div>
+
   <div id="touch-overlay"></div>
   <div id="touch-hint">pinch to interact</div>
 </div>
 
 <script>
-  const pageName = window.location.pathname.split('/').filter(Boolean).pop();
+  const BASE = 'https://raw.githubusercontent.com/sitar93/glb/main/';
+
+  let pageName = window.location.pathname.split('/').filter(Boolean).pop() || '';
+  pageName = pageName.replace(/\.(html?|php|aspx)$/i, '');
+
   const mv = document.querySelector('#mv');
   const label = document.querySelector('#progress-label');
   const overlay = document.querySelector('#touch-overlay');
   const hint = document.querySelector('#touch-hint');
-
-  customElements.whenDefined('model-viewer').then(() => {
-    mv.setAttribute('src', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.glb');
-    mv.setAttribute('alt', pageName + '_3D');
-    mv.setAttribute('poster', 'https://raw.githubusercontent.com/sitar93/glb/main/' + pageName + '.png');
-  });
+  const caseModeWrap = document.querySelector('#case-mode-wrap');
+  const caseModeButtons = caseModeWrap.querySelectorAll('.case-mode-btn');
 
   const isMobile = () => window.matchMedia('(pointer: coarse)').matches;
 
   let inactivityTimer = null;
+  let modelEngaged = false;
 
+  let hasLoadedOnce = false;      // Mobile: GLB downloaded at least once
+  let hasInteractedOnce = false;  // Desktop: user clicked at least once
+
+  let hasCaseGlb = false;
+  let hasCasePoster = false;
+
+  let currentMode = 'standalone';
+
+  let pendingGlb = '';
+  let pendingPoster = '';
+
+  function getHintText() {
+    if (!isMobile()) return 'click to interact';
+    return hasLoadedOnce ? 'pinch to interact' : 'pinch to load 3D model';
+  }
+
+  function hideLoadingLabel() {
+    label.style.display = 'none';
+  }
+
+  function showLoadingLabel(percent) {
+    label.style.display = '';
+    label.textContent = 'loading 3D model ' + percent + '%';
+  }
+
+  function setAutoRotate(on) {
+    if (on) {
+      mv.setAttribute('auto-rotate', '');
+      mv.setAttribute('auto-rotate-delay', '0');
+      mv.setAttribute('rotation-per-second', '60deg');
+    } else {
+      mv.removeAttribute('auto-rotate');
+    }
+  }
+
+  function updatePendingUrls(withCase) {
+    pendingGlb = withCase
+      ? BASE + pageName + '_case.glb'
+      : BASE + pageName + '.glb';
+
+    pendingPoster =
+      withCase && hasCasePoster
+        ? BASE + pageName + '_case.png'
+        : BASE + pageName + '.png';
+  }
+
+  function applyPendingSource() {
+    if (!mv.getAttribute('src') || mv.getAttribute('src') !== pendingGlb) {
+      mv.setAttribute('src', pendingGlb);
+    }
+  }
+
+  function headOk(url) {
+    return fetch(url, {
+      method: 'HEAD',
+      mode: 'cors',
+      cache: 'no-cache'
+    })
+      .then((r) => {
+        if (r.ok) return true;
+
+        if (r.status === 405 || r.status === 501) {
+          return fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: { Range: 'bytes=0-0' },
+          }).then((r2) => r2.ok);
+        }
+
+        return false;
+      })
+      .catch(() => false);
+  }
+
+  // Show overlay.
+  // Desktop: stop auto-rotate only if the user has already interacted once.
+  //          On first load the model should keep spinning while loading.
+  // Mobile: always stop auto-rotate (it never starts on mobile).
   function enableOverlay() {
     overlay.style.display = 'block';
     hint.style.display = 'block';
-    hint.textContent = isMobile() ? 'pinch to interact' : 'click to interact';
+    hint.textContent = getHintText();
+
+    hideLoadingLabel();
+
+    modelEngaged = false;
+
+    if (isMobile() || hasInteractedOnce) {
+      setAutoRotate(false);
+    }
   }
 
+  // Hide overlay and enable manual interaction.
+  // Desktop: stop auto-rotate and start inactivity timer.
+  // Mobile: if first load, start GLB download. Otherwise start inactivity timer.
   function disableOverlay() {
     overlay.style.display = 'none';
     hint.style.display = 'none';
-    mv.removeAttribute('auto-rotate');
-    resetInactivityTimer();
+
+    modelEngaged = true;
+    hasInteractedOnce = true;
+
+    setAutoRotate(false);
+
+    if (isMobile()) {
+      if (!hasLoadedOnce) {
+        showLoadingLabel(0);
+        applyPendingSource();
+      } else {
+        resetInactivityTimer();
+      }
+    } else {
+      resetInactivityTimer();
+    }
+  }
+
+  // Switch between standalone / eurorack.
+  // If the model was not spinning (overlay visible or manual interaction active),
+  // unlock interaction immediately without requiring another click/pinch.
+  // Desktop with active auto-rotate keeps spinning after source change.
+  function setMode(mode) {
+    const withCase = mode === 'standalone';
+    const wasRotating = mv.hasAttribute('auto-rotate');
+
+    currentMode = mode;
+
+    caseModeButtons.forEach((btn) => {
+      const active = btn.dataset.mode === mode;
+
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
+    updatePendingUrls(withCase);
+
+    mv.setAttribute('poster', pendingPoster);
+    mv.setAttribute(
+      'alt',
+      pageName + (withCase ? '_case_3D' : '_3D')
+    );
+
+    // If overlay is visible or model is stopped,
+    // unlock interaction immediately
+    if (overlay.style.display === 'block' || !wasRotating) {
+      overlay.style.display = 'none';
+      hint.style.display = 'none';
+
+      clearTimeout(inactivityTimer);
+
+      modelEngaged = true;
+
+      setAutoRotate(false);
+    }
+
+    // Mobile without loaded model: do not download anything
+    if (isMobile() && !modelEngaged) {
+      mv.removeAttribute('src');
+      hideLoadingLabel();
+      return;
+    }
+
+    // Mobile before first load: start download
+    if (isMobile() && !hasLoadedOnce) {
+      showLoadingLabel(0);
+      applyPendingSource();
+      return;
+    }
+
+    // Desktop or mobile after first load: switch source
+    showLoadingLabel(0);
+    mv.setAttribute('src', pendingGlb);
+
+    // Desktop with active auto-rotate:
+    // resume spinning on the new model
+    if (!isMobile() && wasRotating) {
+      setAutoRotate(true);
+    }
   }
 
   function resetInactivityTimer() {
     clearTimeout(inactivityTimer);
+
     inactivityTimer = setTimeout(() => {
       enableOverlay();
     }, 2000);
   }
 
-  mv.addEventListener('load', () => {
-    setTimeout(() => {
-      label.style.display = 'none';
+  customElements.whenDefined('model-viewer').then(async () => {
+    hasCaseGlb = await headOk(BASE + pageName + '_case.glb');
+
+    hasCasePoster = hasCaseGlb
+      ? await headOk(BASE + pageName + '_case.png')
+      : false;
+
+    if (hasCaseGlb) {
+      caseModeWrap.classList.add('visible');
+      caseModeWrap.setAttribute('aria-hidden', 'false');
+
+      caseModeButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (btn.dataset.mode !== currentMode) {
+            setMode(btn.dataset.mode);
+          }
+        });
+      });
+
+      setMode('standalone');
+
+    } else {
+      setMode('eurorack');
+    }
+
+    // Mobile:
+    // no auto-rotate, show "pinch to load 3D model"
+    if (isMobile()) {
+      setAutoRotate(false);
       enableOverlay();
+    }
+
+    // Desktop:
+    // auto-rotate starts immediately from HTML attribute,
+    // no initial overlay
+  });
+
+  mv.addEventListener('load', () => {
+
+    if (isMobile()) {
+
+      if (!modelEngaged) return;
+
+      hasLoadedOnce = true;
+
+      hideLoadingLabel();
+      resetInactivityTimer();
+
+      return;
+    }
+
+    setTimeout(() => {
+
+      hideLoadingLabel();
+
+      // If the user already interacted,
+      // do not show "click to interact" immediately
+      if (modelEngaged || hasInteractedOnce) {
+
+        overlay.style.display = 'none';
+        hint.style.display = 'none';
+
+        resetInactivityTimer();
+
+        return;
+      }
+
+      // First desktop load
+      enableOverlay();
+
     }, 300);
   });
 
   overlay.addEventListener('click', () => {
-    if (!isMobile()) disableOverlay();
+    if (!isMobile()) {
+      disableOverlay();
+    }
   });
 
   overlay.addEventListener('touchstart', (e) => {
@@ -127,17 +420,39 @@
   }, { passive: false });
 
   mv.addEventListener('progress', (e) => {
+
     const p = Math.round(e.detail.totalProgress * 100);
-    label.textContent = 'loading 3D model ' + p + '%';
+
+    if (isMobile()) {
+
+      if (!modelEngaged) return;
+
+      if (p >= 100) {
+        hideLoadingLabel();
+        return;
+      }
+
+      showLoadingLabel(p);
+
+      return;
+    }
+
+    showLoadingLabel(p);
   });
 
   mv.addEventListener('touchstart', () => {
-    mv.removeAttribute('auto-rotate');
+    if (modelEngaged) {
+      setAutoRotate(false);
+    }
+
     clearTimeout(inactivityTimer);
+
   }, { passive: true });
 
   mv.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 1) e.stopPropagation();
+    if (e.touches.length === 1) {
+      e.stopPropagation();
+    }
   }, { passive: true });
 
   mv.addEventListener('touchend', () => {
@@ -149,7 +464,9 @@
   });
 
   mv.addEventListener('mousemove', (e) => {
-    if (e.buttons > 0) clearTimeout(inactivityTimer);
+    if (e.buttons > 0) {
+      clearTimeout(inactivityTimer);
+    }
   });
 
   mv.addEventListener('mouseup', () => {
