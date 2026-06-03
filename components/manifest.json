@@ -1,0 +1,304 @@
+﻿{
+    "components":  [
+                       {
+                           "id":  "adapter_pot_T18_to_6.35mm_brass",
+                           "label":  "adapter pot T18 to 6.35mm brass"
+                       },
+                       {
+                           "id":  "cable_dupont_8mm",
+                           "label":  "cable dupont 8mm"
+                       },
+                       {
+                           "id":  "cable_eurorack_power",
+                           "label":  "cable eurorack power"
+                       },
+                       {
+                           "id":  "cable_IDC_1x3_2.54mm",
+                           "label":  "cable IDC 1x3 2.54mm"
+                       },
+                       {
+                           "id":  "cable_JST_1x3_2.00mm",
+                           "label":  "cable JST 1x3 2.00mm"
+                       },
+                       {
+                           "id":  "cap_fader",
+                           "label":  "cap fader"
+                       },
+                       {
+                           "id":  "cap_switch_4PDT",
+                           "label":  "cap switch 4PDT"
+                       },
+                       {
+                           "id":  "fader_Bourns_45mm",
+                           "label":  "fader Bourns 45mm"
+                       },
+                       {
+                           "id":  "header_shrouded_2x5_2.54mm",
+                           "label":  "header shrouded 2x5 2.54mm"
+                       },
+                       {
+                           "id":  "heatsink_90x7",
+                           "label":  "heatsink 90x7"
+                       },
+                       {
+                           "id":  "hex_key_M2",
+                           "label":  "hex key M2"
+                       },
+                       {
+                           "id":  "hex_key_M3",
+                           "label":  "hex key M3"
+                       },
+                       {
+                           "id":  "hex_key_Rogan_medium",
+                           "label":  "hex key Rogan medium"
+                       },
+                       {
+                           "id":  "jack_socket_3.5mm_WQP518MA_Thonkiconn",
+                           "label":  "jack socket 3.5mm WQP518MA Thonkiconn"
+                       },
+                       {
+                           "id":  "jack_socket_PJ301BM_3.5mm",
+                           "label":  "jack socket PJ301BM 3.5mm"
+                       },
+                       {
+                           "id":  "jack_socket_PJ301CM_3.5mm",
+                           "label":  "jack socket PJ301CM 3.5mm"
+                       },
+                       {
+                           "id":  "jack_socket_PJ366ST_green stereo_3.5mm",
+                           "label":  "jack socket PJ366ST green stereo 3.5mm"
+                       },
+                       {
+                           "id":  "jumper_1x2_2.54mm",
+                           "label":  "jumper 1x2 2.54mm"
+                       },
+                       {
+                           "id":  "jumper_1x2_2.54mm_red_long",
+                           "label":  "jumper 1x2 2.54mm red long"
+                       },
+                       {
+                           "id":  "jumper_1x2_2mm",
+                           "label":  "jumper 1x2 2mm"
+                       },
+                       {
+                           "id":  "knob_KN8F_6.35mm_shaft",
+                           "label":  "knob KN8F 6.35mm shaft"
+                       },
+                       {
+                           "id":  "knob_KNA2014_6.35mm_shaft",
+                           "label":  "knob KNA2014 6.35mm shaft"
+                       },
+                       {
+                           "id":  "knob_micro_T18_black",
+                           "label":  "knob micro T18 black"
+                       },
+                       {
+                           "id":  "knob_RB671_rogan_6.35mm_shaft",
+                           "label":  "knob RB671 rogan 6.35mm shaft"
+                       },
+                       {
+                           "id":  "LED_square_3mm_blue",
+                           "label":  "LED square 3mm blue"
+                       },
+                       {
+                           "id":  "LED_square_3mm_red",
+                           "label":  "LED square 3mm red"
+                       },
+                       {
+                           "id":  "nut_knurled_jack_socket",
+                           "label":  "nut knurled jack socket"
+                       },
+                       {
+                           "id":  "nut_M2_self_locking",
+                           "label":  "nut M2 self locking"
+                       },
+                       {
+                           "id":  "nut_pot",
+                           "label":  "nut pot"
+                       },
+                       {
+                           "id":  "nut_pot_black",
+                           "label":  "nut pot black"
+                       },
+                       {
+                           "id":  "nut_sub-mini_toggle_switch",
+                           "label":  "nut sub-mini toggle switch"
+                       },
+                       {
+                           "id":  "optocoupler_LCR0202",
+                           "label":  "optocoupler LCR0202"
+                       },
+                       {
+                           "id":  "pad_silicon",
+                           "label":  "pad silicon"
+                       },
+                       {
+                           "id":  "pin_1x3_2.54mm",
+                           "label":  "pin 1x3 2.54mm"
+                       },
+                       {
+                           "id":  "pin_1x4_2.54mm_gold",
+                           "label":  "pin 1x4 2.54mm gold"
+                       },
+                       {
+                           "id":  "pin_2x5_2.54mm_gold",
+                           "label":  "pin 2x5 2.54mm gold"
+                       },
+                       {
+                           "id":  "pot_RD901F_6.35mm_shaft_alpha_9mm_vertical",
+                           "label":  "pot RD901F 6.35mm shaft alpha 9mm vertical"
+                       },
+                       {
+                           "id":  "pot_RD901F_T18_shaft_alpha_9mm_vertical",
+                           "label":  "pot RD901F T18 shaft alpha 9mm vertical"
+                       },
+                       {
+                           "id":  "pot_RD902F_6.35mm_shaft_alpha_9mm_dual_gang_vertical",
+                           "label":  "pot RD902F 6.35mm shaft alpha 9mm dual gang vertical"
+                       },
+                       {
+                           "id":  "pot_RD902F_6.35mm_shaft_alpha_9mm_vertical",
+                           "label":  "pot RD902F 6.35mm shaft alpha 9mm vertical"
+                       },
+                       {
+                           "id":  "pot_RV09_vertical_T18_plastic_shaft",
+                           "label":  "pot RV09 vertical T18 plastic shaft"
+                       },
+                       {
+                           "id":  "pot_RV112FF_D_shaft",
+                           "label":  "pot RV112FF D shaft"
+                       },
+                       {
+                           "id":  "rivet_M3",
+                           "label":  "rivet M3"
+                       },
+                       {
+                           "id":  "rivet_M4",
+                           "label":  "rivet M4"
+                       },
+                       {
+                           "id":  "screw_M2.5_4mm",
+                           "label":  "screw M2.5 4mm"
+                       },
+                       {
+                           "id":  "screw_M2.5_5mm",
+                           "label":  "screw M2.5 5mm"
+                       },
+                       {
+                           "id":  "screw_M2_10mm",
+                           "label":  "screw M2 10mm"
+                       },
+                       {
+                           "id":  "screw_M3_10mm",
+                           "label":  "screw M3 10mm"
+                       },
+                       {
+                           "id":  "screw_M3_6mm",
+                           "label":  "screw M3 6mm"
+                       },
+                       {
+                           "id":  "screw_M4_knurled_8mm",
+                           "label":  "screw M4 knurled 8mm"
+                       },
+                       {
+                           "id":  "socket_JST_1x3_2mm",
+                           "label":  "socket JST 1x3 2mm"
+                       },
+                       {
+                           "id":  "socket_JST_2x4_2mm",
+                           "label":  "socket JST 2x4 2mm"
+                       },
+                       {
+                           "id":  "socket_round_pin_1x10_2.54mm",
+                           "label":  "socket round pin 1x10 2.54mm"
+                       },
+                       {
+                           "id":  "spacer_silicon_M2_5mm",
+                           "label":  "spacer silicon M2 5mm"
+                       },
+                       {
+                           "id":  "spacer_standoff_M2.5_F-F_copper_6mm",
+                           "label":  "spacer standoff M2.5 F-F copper 6mm"
+                       },
+                       {
+                           "id":  "spacer_standoff_M2.5_F-M_copper_6mm",
+                           "label":  "spacer standoff M2.5 F-M copper 6mm"
+                       },
+                       {
+                           "id":  "spacer_standoff_M3_F-F_black_round_10mm",
+                           "label":  "spacer standoff M3 F-F black round 10mm"
+                       },
+                       {
+                           "id":  "spacer_standoff_M3_F-M_black_8mm",
+                           "label":  "spacer standoff M3 F-M black 8mm"
+                       },
+                       {
+                           "id":  "switch_push_latch_4PDT_TL4201EEYA",
+                           "label":  "switch push latch 4PDT TL4201EEYA"
+                       },
+                       {
+                           "id":  "switch_push_PBS105",
+                           "label":  "switch push PBS105"
+                       },
+                       {
+                           "id":  "switch_push_SKRGAED010",
+                           "label":  "switch push SKRGAED010"
+                       },
+                       {
+                           "id":  "switch_push_TC12EF",
+                           "label":  "switch push TC12EF"
+                       },
+                       {
+                           "id":  "switch_slide_onoff_SS12D00",
+                           "label":  "switch slide onoff SS12D00"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_DPDT_onoff_long_lever",
+                           "label":  "switch toggle sub-mini DPDT onoff long lever"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_DPDT_onoff_short_lever",
+                           "label":  "switch toggle sub-mini DPDT onoff short lever"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_SPDT_onoff_long_lever",
+                           "label":  "switch toggle sub-mini SPDT onoff long lever"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_SPDT_onoff_shortlever",
+                           "label":  "switch toggle sub-mini SPDT onoff shortlever"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_SPDT_threeway_longlever",
+                           "label":  "switch toggle sub-mini SPDT threeway longlever"
+                       },
+                       {
+                           "id":  "switch_toggle_sub-mini_SPDT_threeway_shortlever",
+                           "label":  "switch toggle sub-mini SPDT threeway shortlever"
+                       },
+                       {
+                           "id":  "trimmer_Bourns_horizontal_3296",
+                           "label":  "trimmer Bourns horizontal 3296"
+                       },
+                       {
+                           "id":  "vactrol_VTL5C_vertical",
+                           "label":  "vactrol VTL5C vertical"
+                       },
+                       {
+                           "id":  "voltmeter_three_digits",
+                           "label":  "voltmeter three digits"
+                       },
+                       {
+                           "id":  "washer_M2.5_metal_brass",
+                           "label":  "washer M2.5 metal brass"
+                       },
+                       {
+                           "id":  "washer_M3_plastic",
+                           "label":  "washer M3 plastic"
+                       },
+                       {
+                           "id":  "washer_potentiometer_metal_silver",
+                           "label":  "washer potentiometer metal silver"
+                       }
+                   ]
+}
