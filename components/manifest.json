@@ -21,16 +21,20 @@
             "label": "cable JST 1x3 2.00mm"
         },
         {
-            "id": "cap_fader",
-            "label": "cap fader"
+            "id": "cap_ABS_square_black_6.3mm",
+            "label": "cap ABS square black 6.3mm"
         },
         {
-            "id": "cap_switch_4PDT",
-            "label": "cap switch 4PDT"
+            "id": "cap_silicon_round_black_5mm",
+            "label": "cap silicon round black 5mm"
         },
         {
             "id": "fader_Bourns_45mm",
             "label": "fader Bourns 45mm"
+        },
+        {
+            "id": "header_IDC_2x5_2.54mm",
+            "label": "header IDC 2x5 2.54mm"
         },
         {
             "id": "header_JST_1x3_2mm",
@@ -39,10 +43,6 @@
         {
             "id": "header_JST_2x4_2mm",
             "label": "header JST 2x4 2mm"
-        },
-        {
-            "id": "header_shrouded_2x5_2.54mm",
-            "label": "header shrouded 2x5 2.54mm"
         },
         {
             "id": "heatsink_90x7",
