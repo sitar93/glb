@@ -48,7 +48,12 @@ Each model is based on a real component, providing reliable references for DIY b
 
 The entire library can be downloaded free of charge.
 
-If you find it useful and would like to support future additions, maintenance, and other free projects like this, you can make a donation or browse our shop.
+## Support
+
+If you find this library useful and want to support future free projects, you can:
+
+- [Make a donation](https://jolin.tech/componentslibrary?component=adapter_pot_T18_to_6.35mm_brass#)
+- [Browse the Jolin shop](https://jolin.tech/shop)
 
 ## License
 
