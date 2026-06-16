@@ -66,4 +66,6 @@ You are free to use, copy, modify, and distribute the files, including for comme
 Please credit the library as:
 
 ```text
-Jolin 3D Component Library by Federico Intrisano / Jolin, licensed under CC BY 4.0.
+License: CC BY 4.0
+Author: Jolin
+Website: https://jolin.tech
